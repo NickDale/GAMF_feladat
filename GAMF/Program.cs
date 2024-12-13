@@ -1,7 +1,15 @@
+using GAMF.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+ConfigurationManager conf = builder.Configuration;
+builder.Services.AddDbContext<GAMFDbContext>(
+        options => options.UseNpgsql(conf["ConnectionStrings:GamfDbConnection"])
+);
 
 var app = builder.Build();
 
