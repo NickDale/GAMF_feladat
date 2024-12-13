@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GAMF.Data;
 using GAMF.Models;
+using GAMF.ViewModel;
 
 namespace GAMF.Controllers
 {
@@ -44,6 +45,23 @@ namespace GAMF.Controllers
 
             return View(enrollments.ToList());
         }
+
+        public IActionResult Index2() => View();
+
+        public JsonResult GetEnrollments()
+        {
+            var enrollments = _context.Enrollments
+                .Include(e => e.Course)
+                .Include(e => e.Student)
+                .Select(e => new EnrollmentListVM
+                {
+                    CourseTitle = e.Course.Title,
+                    StudentFullName = $"{e.Student.LastName} {e.Student.FirstMidName}",
+                    Grade = e.Grade.ToString()
+                });
+            return Json(enrollments.ToList());
+        }
+
 
         // GET: Enrollments/Details/5
         public async Task<IActionResult> Details(int? id)
